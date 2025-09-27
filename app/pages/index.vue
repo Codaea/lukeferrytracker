@@ -71,7 +71,6 @@ function formatDayAndTime(timestamp: string): string {
 const { data: lukeSightings } = await useAsyncData<LukeSighting[]>('luke_sightings', async() => {
     const { data } = await client.from('luke_sightings').select('*')
     
-    console.log('Fetched Luke Sightings:', data)
     return data as LukeSighting[]
 })
 
