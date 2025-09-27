@@ -2,13 +2,20 @@
     <h1 class="fixed top top-4 left-1/2 transform -translate-x-1/2 text-2xl text-center bg-red-600 text-white p-4 w-4/5 rounded-xl shadow-lg">
         CLICK ANYWHERE TO REPORT LUKE FERRY SIGHTING
     </h1>
-    <div class="z-0" style="height: 100vh; width: 100vw;">
+    <div class="z-0" style="height: 100vh; width: 100vw; position: relative;">
+        <!-- Map Loading Indicator -->
+        <div v-if="!mapReady" class="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
+            <div class="text-center">
+                <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-red-600 mx-auto mb-4"></div>
+                <p class="text-gray-600 text-lg">Loading map...</p>
+            </div>
+        </div>
         <div class="fixed top bottom-6 left-1/2 transform -translate-x-1/2 z-50">
             <button @click="submitReport" v-if="pinDown" class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-full shadow-lg text-xl transition-colors duration-200 flex items-center gap-3">
                 Report Luke Sighting
             </button>
         </div>
-        <LMap @click="onMapClick" ref="map" :zoom="zoom" :center="[44.5618, -123.2823]" :use-global-leaflet="false">
+        <LMap @click="onMapClick" @ready="mapReady = true" ref="map" :zoom="zoom" :center="[44.5618, -123.2823]" :use-global-leaflet="false">
             <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&amp;copy; <a href=&quot;https://www.openstreetmap.org/&quot;>OpenStreetMap</a> contributors"
             layer-type="base" name="OpenStreetMap" />
@@ -23,6 +30,7 @@
 const zoom = ref(16)
 const lat_lng = ref([])
 const pinDown = ref(false)
+const mapReady = ref(false)
 
 const client = useSupabaseClient()
 const router = useRouter()

@@ -1,6 +1,14 @@
 <template>
     <h1 class="text-3xl">Luke Ferry Tracker</h1>
     <div style="height:100vh; width:100vw; position: relative;">
+      <!-- Map Loading Indicator -->
+      <div v-if="!mapReady" class="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
+        <div class="text-center">
+          <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-red-600 mx-auto mb-4"></div>
+          <p class="text-gray-600 text-lg">Loading map...</p>
+        </div>
+      </div>
+      
       <div class="fixed top bottom-6 left-1/2 transform -translate-x-1/2 z-50">
       <NuxtLink 
         href="/report" 
@@ -17,6 +25,7 @@
       :zoom="zoom"
       :center="[44.5618, -123.2823]"
       :use-global-leaflet="false"
+      @ready="mapReady = true"
     >
       <LTileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -47,6 +56,7 @@
 
 <script setup lang="ts">
 const zoom = ref(16)
+const mapReady = ref(false)
 const client = useSupabaseClient()
 
 interface LukeSighting {
