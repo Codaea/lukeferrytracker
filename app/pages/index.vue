@@ -67,15 +67,29 @@ interface LukeSighting {
   // add other fields if needed
 }
 
-// Helper function to format timestamp to day and time
+// Helper function to format timestamp to show days and hours ago
 function formatDayAndTime(timestamp: string): string {
   const date = new Date(timestamp)
-  return date.toLocaleString('en-US', {
-    weekday: 'long',  // "Thursday"
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true      // 12-hour format with AM/PM
-  })
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+  const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
+  
+  if (diffDays > 0) {
+    if (diffHours > 0) {
+      return `${diffDays} day${diffDays > 1 ? 's' : ''} and ${diffHours} hour${diffHours > 1 ? 's' : ''} ago`
+    } else {
+      return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`
+    }
+  } else if (diffHours > 0) {
+    return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`
+  } else if (diffMinutes > 0) {
+    return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`
+  } else {
+    return 'Just now'
+  }
 }
 
 const { data: lukeSightings } = await useAsyncData<LukeSighting[]>('luke_sightings', async() => {
