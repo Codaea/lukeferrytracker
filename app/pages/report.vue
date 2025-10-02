@@ -52,6 +52,20 @@ function submitReport() {
 
     const { lat, lng } = lat_lng.value
 
+   
+   client.functions.invoke('update-alert', {
+       body: {
+           lat: lat,
+           lon: lng
+       }
+    }).then(({ data, error }) => {
+        if (error) {
+            console.error("Error invoking function:", error)
+        } else {
+            console.log("Function invoked successfully:", data)
+        }
+    })
+    
     client.from('luke_sightings').insert([
         { latitude: lat, longitude: lng }
     ]).then(({ data, error }) => {
